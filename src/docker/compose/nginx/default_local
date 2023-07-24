@@ -1,0 +1,33 @@
+upstream django {
+    server localhost:8000;
+}
+
+upstream nuxt {
+    server localhost:3000;
+}
+
+upstream mockednuxt {
+    server localhost:3001;
+}
+
+server {
+    listen 80;
+    server_name backend;
+
+    location ~ ^/(admin|api|static) {
+        proxy_pass      http://django;
+    }
+
+    location / {
+        proxy_pass      http://nuxt;
+    }
+}
+
+server {
+    listen 80;
+    server_name mock;
+
+    location / {
+        proxy_pass      http://mockednuxt;
+    }
+}
