@@ -4,9 +4,11 @@
     persistent
     width="500px"
     max-width="90%"
+    overlay-opacity="0.8"
+    @click:outside="close()"
   >
-    <v-card class="pa-4">
-      <v-card-title class="title px-0 pt-2">
+    <v-card class="pa-6">
+      <v-card-title class="title px-5 pt-2">
         {{ buttonActionText }} ativo
       </v-card-title>
       <v-card-text>
@@ -15,12 +17,9 @@
           justify-center
           class="px-0"
         >
-          <v-flex
-            sm12
-            xs12
-          >
+          <v-flex xs12>
             <v-autocomplete
-              v-model="siglaTxt"
+              v-model="siglaSelection"
               label="Sigla*"
               :items="ativos"
               item-value="id"
@@ -30,39 +29,27 @@
               :search-input.sync="searchInputAtivos"
               :no-data-text="ativoNoDataText"
               placeholder="Digite a sigla do ativo..."
-              :disabled="editMode"
               append-icon="search"
               class="mr-3"
+              :disabled="editMode"
               return-object
             />
           </v-flex>
-          <v-flex
-            align-center
-            sm4
-          >
-            <vue-timepicker
-              v-model="interval"
-              label="Periodicidade de observação"
-              format="HH:mm"
-              :disabled="editMode"
-              class="mr-3"
-            />
-          </v-flex>
+        </v-layout>
+        <v-layout wrap py-3 justify-space-between>
           <v-flex xs12>
             <h3>Parâmetros de túnel</h3>
           </v-flex>
-        </v-layout>
-        <v-layout justify-space-between>
           <v-flex xs5>
             <v-text-field
               v-model="lowerLim"
               label="Limite inferior"
               hint="Limite inferior"
               style="min-width: 50px"
-              prefix="-"
               type="number"
               suffix="%"
               single-line
+              :rules="[rules.required, rules.between(-100, 0)]"
             />
           </v-flex>
           <v-flex xs5>
@@ -71,10 +58,33 @@
               label="Limite superior"
               hint="Limite inferior"
               style="min-width: 50px"
-              prefix="+"
               type="number"
               suffix="%"
               single-line
+              :rules="[rules.required, rules.between(0, 100)]"
+            />
+          </v-flex>
+        </v-layout>
+        <v-layout wrap py-3 justify-space-between>
+          <v-flex xs12 py-2>
+            <h3>Periodicidade de observação</h3>
+          </v-flex>
+          <v-flex xs9 pr-2 class="align-self-end">
+            <v-slider
+              v-model="interval"
+              min="1"
+              :max="timeMax"
+              label="Monitarar a cada"
+              thumb-size="23"
+              thumb-label="always"
+            />
+          </v-flex>
+          <v-flex xs3>
+            <v-select
+              v-model="timeUnit"
+              :items="timeUnitOptions"
+              item-text="label"
+              item-value="value"
             />
           </v-flex>
         </v-layout>
@@ -91,7 +101,7 @@
           <v-btn
             color="success"
             :loading="loadingAdd"
-            @click="editMode ? updateAtivo() : addAtivo()"
+            @click="createOrUpdateAtivo()"
           >
             {{ buttonActionText }}
           </v-btn>
@@ -103,7 +113,6 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import 'vue2-timepicker/dist/VueTimepicker.css'
 import rules from '~/helpers/rules'
 import api from '~api'
 
@@ -124,11 +133,17 @@ export default {
       loadingAdd: false,
       loadingAtivos: false,
       loadingNoData: false,
-      ativos: [],
-      interval: '',
-      lowerLim: '',
-      upperLim: '',
-      siglaTxt: null,
+      ativos: [this.ativo],
+      timeUnitOptions: [
+        { label: 'Minutos', value: 'minute', max: 60 },
+        { label: 'Horas', value: 'hour', max: 24 }
+      ],
+      timeUnit: 'minute',
+      interval: 5,
+      lowerLim: -5,
+      upperLim: 5,
+      timeMax: 60,
+      siglaSelection: this.ativo,
       searchInputAtivos: null,
       rules
     }
@@ -148,52 +163,34 @@ export default {
       }
       this.searchB3Ativos({ text: txt })
     },
-    upperLim (txt) {
-      console.log(txt)
+    timeUnit (unit) {
+      if (unit === 'hour') {
+        this.timeMax = 24
+      } else { this.timeMax = 60 }
     }
   },
   methods: {
-    searchB3Ativos: debounce(async function ({ text = '', id = null }) {
+    searchB3Ativos: debounce(async function ({ text = '' }) {
       this.loadingAtivos = true
       try {
-        this.ativos = await api.staff.listAtivos({ name: text, id })
-        if (id) {
-          this.siglaTxt = this.ativos[0]
-        }
+        const result = await api.ativos.fetchAtivosB3({ sigla: text })
+        this.ativos = result.ativos
       } catch (err) {
         this.$store.commit('toast/open', { message: err.message, color: 'error' })
       } finally {
         this.loadingAtivos = false
       }
     }, 500),
-    async addAtivo () {
+    async createOrUpdateAtivo () {
       this.loadingAdd = true
       try {
         const params = this.dumpParams()
-        const result = await api.ativo.addAtivo(params)
+        const result = await api.ativos.createOrUpdateAtivo(params)
         this.$emit('reloadAtivos')
         if (result.success) {
+          const acao = this.editMode ? 'atualizado' : 'adicionado'
           this.$store.commit('toast/open', {
-            message: 'Ativo adicionado com sucesso',
-            color: 'success'
-          })
-        }
-      } catch (err) {
-        this.$store.commit('toast/open', { message: err.message, color: 'error' })
-      } finally {
-        this.loadingAdd = false
-        this.close()
-      }
-    },
-    async updateAtivo () {
-      this.loadingAdd = true
-      try {
-        const params = this.dumpParams()
-        const result = await api.ativo.updateAtivo(params)
-        this.$emit('reloadAtivos')
-        if (result.success) {
-          this.$store.commit('toast/open', {
-            message: 'Ativo atualizado com sucesso',
+            message: `Ativo ${acao} com sucesso`,
             color: 'success'
           })
         }
@@ -206,12 +203,20 @@ export default {
     },
     dumpParams () {
       const params = {
-        sigla: this.ativo.sigla,
+        sigla: this.siglaSelection,
         upper_lower: this.lowerLim,
         upper_limit: this.upperLim,
-        interval: this.interval
+        interval: this.timeUnit === 'minute' ? this.interval : this.interval * 60
       }
       return params
+    },
+    setAtivoData () {
+      this.ativos.push(this.ativo)
+      this.siglaSelection = this.ativo
+      this.interval = this.ativo.parsedInterval.split(' ')[0]
+      this.timeUnit = this.ativo.parsedInterval.split(' ')[1] === 'min' ? 'minute' : 'hour'
+      this.lowerLim = this.ativo.lower_limit
+      this.upperLim = this.ativo.upper_limit
     },
     close () {
       this.visible = false
@@ -219,9 +224,8 @@ export default {
     openDialog () {
       this.visible = true
       if (this.ativo) {
-        this.interval = this.ativo.interval
-        this.lowerLim = this.ativo.lower_limit
-        this.upperLim = this.ativo.upper_limit
+        this.setAtivoData()
+        console.log(this.siglaSelection)
       }
     }
   }

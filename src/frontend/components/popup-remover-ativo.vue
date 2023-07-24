@@ -2,7 +2,7 @@
   <v-dialog v-model="visible" width="500px" max-width="90%">
     <v-card class="pa-4">
       <v-card-title class="title px-0 pt-2">
-        Remover - {{ ativo.name }}
+        Remover - {{ ativo.sigla }}
       </v-card-title>
       <v-card-text>
         <v-layout wrap justify-center class="px-0">
@@ -52,9 +52,9 @@ export default {
     async removerAtivo () {
       this.loading = true
       try {
-        await api.staff.removerAtivo(this.ativo.id)
+        await api.ativos.removerAtivo(this.ativo.sigla)
         this.$store.commit('toast/open', {
-          message: ' ativo removido',
+          message: 'Ativo removido',
           color: 'success'
         })
       } catch (err) {

@@ -12,8 +12,12 @@
     "lint": "npm run lint:js"
   },
   "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "6.1.2",
+    "@fortawesome/free-regular-svg-icons": "6.1.2",
+    "@fortawesome/free-solid-svg-icons": "6.1.2",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/pwa": "^3.3.5",
+    "@nuxtjs/fontawesome": "^1.1.2",
     "core-js": "^3.15.1",
     "material-design-icons-iconfont": "^6.7.0",
     "nuxt": "^2.15.7",

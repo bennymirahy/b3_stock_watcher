@@ -1,7 +1,7 @@
 <template>
   <tr :key="ativo.id">
     <td>{{ ativo.sigla }}</td>
-    <td>{{ ativo.interval }}</td>
+    <td>{{ ativo.parsedInterval }}</td>
     <td>{{ ativo.value }}</td>
     <td>{{ ativo.updated_at }}</td>
     <td>
@@ -20,18 +20,15 @@
         dangerous
       </v-icon>
     </td>
-    <v-btn color="primary">
-      <v-icon
-        left
-        @click="openRemoveDialog()"
-      >
-        dangerous
-      </v-icon>
-    </v-btn>
     <popup-criar-ativo
       ref="popupCriarAtivo"
       :ativo="ativo"
       :edit-mode="true"
+      @reloadAtivos="reloadAtivos()"
+    />
+    <popup-remover-ativo
+      ref="popupRemoverAtivo"
+      :ativo="ativo"
       @reloadAtivos="reloadAtivos()"
     />
   </tr>
@@ -39,10 +36,11 @@
 
 <script>
 import popupCriarAtivo from '~/components/popup-criar-ativo'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import popupRemoverAtivo from '~/components/popup-remover-ativo'
 export default {
   components: {
-    popupCriarAtivo
+    popupCriarAtivo,
+    popupRemoverAtivo
   },
   props: {
     ativo: {
@@ -52,10 +50,10 @@ export default {
   },
   methods: {
     openEditDialog () {
-      this.$refs.popupCreateAtivo.openDialog()
+      this.$refs.popupCriarAtivo.openDialog()
     },
     openRemoveDialog () {
-      this.$refs.popupRemoveAtivo.openDialog()
+      this.$refs.popupRemoverAtivo.openDialog()
     },
     reloadAtivos () {
       this.$emit('reloadAtivos')

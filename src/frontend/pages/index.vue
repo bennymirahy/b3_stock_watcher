@@ -29,7 +29,7 @@
           color="primary"
           @click="openAddAtivoDialog()"
         >
-          <v-icon>add</v-icon>Adicionar ativo
+          <v-icon> add </v-icon>Adicionar ativo
         </v-btn>
       </v-layout>
     </v-layout>
@@ -43,13 +43,10 @@
       item-key="id"
       items-per-page-text="Registros por página"
     >
-      <template
-        slot="items"
-        slot-scope="props"
-      >
+      <template #item="row">
         <ativos-table-row
-          :key="props.id"
-          :ativo="props.item"
+          :key="row.item.id"
+          :ativo="row.item"
           @reloadAtivos="update()"
         />
       </template>
@@ -82,7 +79,7 @@ export default {
       siglaSearch: '',
       headers: [
         { text: 'Sigla', value: 'sigla' },
-        { text: 'Intervalo de Observação', value: 'interval' },
+        { text: 'Intervalo de Observação', value: 'parsedInterval' },
         { text: 'Último Valor (R$)', value: 'value' },
         { text: 'Última Atualização (UTC-3)', value: 'updated_at' },
         { text: 'Ações', value: 'acoes', sortable: false }
@@ -123,7 +120,7 @@ export default {
       try {
         const result = await api.ativos.listAtivos(params)
         console.log(result)
-        this.ativos = result.ativos
+        this.ativos = this.parseAtivos(result.ativos)
         this.totalItems = result.count
       } catch (err) {
         this.$store.commit('toast/open', { message: err.message, color: 'error' })
@@ -138,6 +135,20 @@ export default {
       }
       params.sigla = params.sigla.toUpperCase()
       return params
+    },
+    parseAtivos (ativos) {
+      // Intervalos armazenados em minutos no banco de dados
+      ativos.forEach(a => {
+        if (a.parsedInterval) {
+          return
+        }
+        if (a.interval > 60) {
+          a.parsedInterval = a.interval / 60 + ' h'
+        } else {
+          a.parsedInterval = a.interval + ' min'
+        }
+      })
+      return ativos
     },
     openAddAtivoDialog () {
       this.$refs.popupCriarAtivo.openDialog()
