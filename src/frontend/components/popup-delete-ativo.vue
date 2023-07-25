@@ -22,7 +22,7 @@
           <v-btn
             color="success"
             :loading="loading"
-            @click="removerAtivo()"
+            @click="deleteAtivo()"
           >
             Remover
           </v-btn>
@@ -49,10 +49,10 @@ export default {
     }
   },
   methods: {
-    async removerAtivo () {
+    async deleteAtivo () {
       this.loading = true
       try {
-        await api.ativos.removerAtivo(this.ativo.sigla)
+        await api.ativos.deleteAtivo(this.ativo.sigla)
         this.$store.commit('toast/open', {
           message: 'Ativo removido',
           color: 'success'

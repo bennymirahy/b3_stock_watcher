@@ -5,13 +5,13 @@ export default {
   listAtivos (params) {
     return get('/api/ativos/list', { params }).then(response => response.data)
   },
-  fetchAtivosB3 () {
-    return {}
+  fetchAtivosB3 (params) {
+    return get('/api/ativos/fetch', { params }).then(response => response.data)
   },
-  createOrUpdateAtivo () {
-    return {}
+  updateOrCreateAtivo (params) {
+    return post(`/api/ativos/${params.sigla}/save`)
   },
-  removerAtivo () {
-    return {}
+  deleteAtivo (params) {
+    return post(`/api/ativos/${params.sigla}/delete`)
   }
 }

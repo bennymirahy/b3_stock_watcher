@@ -32,12 +32,12 @@ export default {
       count: idx.length
     }).then(response => response)
   },
-  createOrUpdateAtivo () {
+  updateOrCreateAtivo () {
     return mockasync({
       success: true
     })
   },
-  removerAtivo () {
+  deleteAtivo () {
     return mockasync({
       success: true
     })

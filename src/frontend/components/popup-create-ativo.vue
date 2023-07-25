@@ -101,7 +101,7 @@
           <v-btn
             color="success"
             :loading="loadingAdd"
-            @click="createOrUpdateAtivo()"
+            @click="updateOrCreateAtivo()"
           >
             {{ buttonActionText }}
           </v-btn>
@@ -181,11 +181,11 @@ export default {
         this.loadingAtivos = false
       }
     }, 500),
-    async createOrUpdateAtivo () {
+    async updateOrCreateAtivo () {
       this.loadingAdd = true
       try {
         const params = this.dumpParams()
-        const result = await api.ativos.createOrUpdateAtivo(params)
+        const result = await api.ativos.updateOrCreateAtivo(params)
         this.$emit('reloadAtivos')
         if (result.success) {
           const acao = this.editMode ? 'atualizado' : 'adicionado'

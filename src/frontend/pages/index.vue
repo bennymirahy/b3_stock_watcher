@@ -52,8 +52,8 @@
       </template>
     </v-data-table>
 
-    <popup-criar-ativo
-      ref="popupCriarAtivo"
+    <popup-create-ativo
+      ref="popupCreateAtivo"
       :edit-mode="false"
       @reloadAtivos="update()"
     />
@@ -64,13 +64,13 @@
 import debounce from 'lodash/debounce'
 import api from '~api'
 import ativosTableRow from '~/components/ativos-table-row'
-import popupCriarAtivo from '~/components/popup-criar-ativo'
+import popupCreateAtivo from '~/components/popup-create-ativo'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 export default {
   components: {
     ativosTableRow,
-    popupCriarAtivo
+    popupCreateAtivo
   },
   data () {
     return {
@@ -151,7 +151,7 @@ export default {
       return ativos
     },
     openAddAtivoDialog () {
-      this.$refs.popupCriarAtivo.openDialog()
+      this.$refs.popupCreateAtivo.openDialog()
     }
   }
 }

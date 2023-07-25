@@ -15,19 +15,19 @@
       <v-icon
         slot="activator"
         left
-        @click="openRemoveDialog()"
+        @click="openDeleteDialog()"
       >
         dangerous
       </v-icon>
     </td>
-    <popup-criar-ativo
-      ref="popupCriarAtivo"
+    <popup-create-ativo
+      ref="popupCreateAtivo"
       :ativo="ativo"
       :edit-mode="true"
       @reloadAtivos="reloadAtivos()"
     />
-    <popup-remover-ativo
-      ref="popupRemoverAtivo"
+    <popup-delete-ativo
+      ref="popupDeleteAtivo"
       :ativo="ativo"
       @reloadAtivos="reloadAtivos()"
     />
@@ -35,12 +35,12 @@
 </template>
 
 <script>
-import popupCriarAtivo from '~/components/popup-criar-ativo'
-import popupRemoverAtivo from '~/components/popup-remover-ativo'
+import popupCreateAtivo from '~/components/popup-create-ativo'
+import popupDeleteAtivo from '~/components/popup-delete-ativo'
 export default {
   components: {
-    popupCriarAtivo,
-    popupRemoverAtivo
+    popupCreateAtivo,
+    popupDeleteAtivo
   },
   props: {
     ativo: {
@@ -50,10 +50,10 @@ export default {
   },
   methods: {
     openEditDialog () {
-      this.$refs.popupCriarAtivo.openDialog()
+      this.$refs.popupCreateAtivo.openDialog()
     },
-    openRemoveDialog () {
-      this.$refs.popupRemoverAtivo.openDialog()
+    openDeleteDialog () {
+      this.$refs.popupDeleteAtivo.openDialog()
     },
     reloadAtivos () {
       this.$emit('reloadAtivos')
