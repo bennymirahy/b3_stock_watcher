@@ -1,8 +1,0 @@
-__pycache__
-.vscode/
-.pytest_cache/
-*.pyc
-.coverage
-/{{name}}.log
-htmlcov/
-dkdata/
