@@ -79,9 +79,9 @@ export default {
       siglaSearch: '',
       headers: [
         { text: 'Sigla', value: 'sigla' },
-        { text: 'Intervalo de Observação', value: 'parsedInterval' },
-        { text: 'Último Valor (R$)', value: 'value' },
-        { text: 'Última Atualização (UTC-3)', value: 'updated_at' },
+        { text: 'Intervalo de observação', value: 'parsedInterval' },
+        { text: 'Preço de referência (R$)', value: 'ref_price' },
+        { text: 'Última atualização (UTC-3)', value: 'updated_at' },
         { text: 'Ações', value: 'acoes', sortable: false }
       ],
       rowsPerPageOptions: [

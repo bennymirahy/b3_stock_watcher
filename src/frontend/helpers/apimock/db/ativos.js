@@ -5,6 +5,7 @@ export default [
     interval: '5',
     value: '664.12',
     updated_at: '23/07/23 às 16:20',
+    ref_price: 100,
     lower_limit: -2,
     upper_limit: 6
   },
@@ -14,6 +15,7 @@ export default [
     interval: '600',
     value: '18.50',
     updated_at: '23/07/23 às 17:40',
+    ref_price: 50,
     lower_limit: -10,
     upper_limit: 4
   },
@@ -23,6 +25,7 @@ export default [
     interval: '15',
     value: '29.68',
     updated_at: '23/07/23 às 23:45',
+    ref_price: 10,
     lower_limit: -2,
     upper_limit: 5
   },
@@ -32,6 +35,7 @@ export default [
     interval: '30',
     value: '3.02',
     updated_at: '23/07/23 às 11:30',
+    ref_price: 200,
     lower_limit: -20,
     upper_limit: 15
   },
@@ -41,6 +45,7 @@ export default [
     interval: '30',
     value: '67.80',
     updated_at: '22/07/23 às 12:10',
+    ref_price: 45,
     lower_limit: -5,
     upper_limit: 3
   }

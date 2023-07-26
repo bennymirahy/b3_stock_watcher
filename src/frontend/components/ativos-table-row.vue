@@ -2,7 +2,7 @@
   <tr :key="ativo.id">
     <td>{{ ativo.sigla }}</td>
     <td>{{ ativo.parsedInterval }}</td>
-    <td>{{ ativo.value }}</td>
+    <td>{{ ativo.ref_price }}</td>
     <td>{{ ativo.updated_at }}</td>
     <td>
       <v-icon
