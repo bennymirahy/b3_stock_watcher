@@ -1,4 +1,3 @@
 from . import (
-    views_auth,
-    views_crash
+    views_auth
 )

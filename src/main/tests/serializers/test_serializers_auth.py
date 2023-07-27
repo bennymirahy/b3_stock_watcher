@@ -1,4 +1,4 @@
-from main.serializers.auth import UserSerializer
+from main.serializers.serializers_auth import UserSerializer
 
 
 def test_serialize_auth(zuck):

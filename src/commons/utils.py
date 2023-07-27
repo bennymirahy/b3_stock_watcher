@@ -23,13 +23,6 @@ def is_only_alpha(s):
     return all(c.isalpha() or c == ' ' for c in s)
 
 
-def sleep(n):
-    if settings.SKIP_SLEEP:
-        return
-    else:
-        return time.sleep(n)
-
-
 def error_str(ex):
     if isinstance(ex, ValidationError):
         return '; '.join(ex.messages)
