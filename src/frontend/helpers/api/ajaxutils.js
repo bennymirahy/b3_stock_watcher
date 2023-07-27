@@ -5,7 +5,7 @@ axios.defaults.xsrfCookieName = 'csrftoken'
 
 export async function get (url, params) {
   const resp = await axios.get(url, { params })
-  return resp.data
+  return resp
 }
 
 export async function post (url, params) {
@@ -14,5 +14,5 @@ export async function post (url, params) {
   Object.keys(params).map(k => {
     fd.append(k, params[k])
   })
-  return (await axios.post(url, fd)).data
+  return (await axios.post(url, fd))
 }

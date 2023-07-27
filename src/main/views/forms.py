@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PaginatorForm(BaseModel):
-    page: int = None
-    rows_per_page: int = None
-    sort_by: str = None
-    descending: bool = None
+    page: int
+    sort_by: str = Field(alias='sortBy')
+    rows_per_page: int = Field(alias='rowsPerPage')
+    descending: bool

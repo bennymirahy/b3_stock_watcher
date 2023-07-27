@@ -14,12 +14,16 @@ def list_ativos(request):
     paginator = request.GET.get('paginator')
     paginator = PaginatorForm.model_validate_json(paginator)
 
-    ativos = ativos_svc.list_ativos(
+    ativos, total_rows = ativos_svc.list_ativos(
+        user=user,
         sigla=sigla,
+        sort_by=paginator.sort_by,
         page=paginator.page,
         rows_per_page=paginator.rows_per_page,
-        sort_by=paginator.sort_by,
         descending=paginator.descending
     )
 
-    return JsonResponse({})
+    return JsonResponse({
+        'ativos': ativos,
+        'count': total_rows
+    })

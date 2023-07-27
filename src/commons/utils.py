@@ -1,8 +1,10 @@
 import re
 import time
+import pytz
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 def only_numbers(s):
@@ -33,3 +35,10 @@ def error_str(ex):
         return '; '.join(ex.messages)
     else:
         return str(ex)
+
+
+def to_tz(d, tz):
+    if d is None:
+        return None
+    ptz = pytz.timezone(tz)
+    return d.astimezone(ptz) if timezone.is_aware(d) else ptz.localize(d)
