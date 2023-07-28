@@ -1,3 +1,1 @@
-from . import (
-    models_auth
-)
+from . import models_auth

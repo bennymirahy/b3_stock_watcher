@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 
 from main.models.models_auth import Profile
 

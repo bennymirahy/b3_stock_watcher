@@ -204,7 +204,7 @@ export default {
       this.loadingAtivos = true
       try {
         const result = await api.ativos.fetchAtivosB3({ sigla: text })
-        this.ativos = result.ativos
+        this.ativos = result.assets
       } catch (err) {
         this.$store.commit('toast/open', { message: err.message, color: 'error' })
       } finally {

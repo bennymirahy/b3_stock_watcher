@@ -1,7 +1,8 @@
 from django_qserializer import BaseSerializer
 
-from main.models.models_ativos import Ativo
 from commons.utils import to_tz
+from main.models.models_ativos import Ativo
+
 
 class AtivoSerializer(BaseSerializer):
     select_related = ['user']

@@ -1,8 +1,8 @@
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST, require_GET
-from django.contrib.auth.models import User
 from django.contrib import auth
+from django.contrib.auth.models import User
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_POST
 
 from main.serializers.serializers_auth import UserSerializer
 

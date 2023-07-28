@@ -1,9 +1,10 @@
+from unittest.mock import MagicMock
+
 import pytest
 from django.contrib.admin.sites import AdminSite
 from django.core.exceptions import PermissionDenied
-from unittest.mock import MagicMock
-from commons.utils import error_str
 
+from commons.utils import error_str
 from main.admin import DeleteNotAllowedAdmin, UserAdmin
 
 

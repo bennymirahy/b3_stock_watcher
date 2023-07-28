@@ -1,6 +1,6 @@
 import pytest
-from model_bakery import baker
 from django.contrib.auth.models import User
+from model_bakery import baker
 
 
 @pytest.fixture

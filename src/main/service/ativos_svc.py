@@ -1,10 +1,11 @@
 from typing import Tuple
 
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.core.serializers.base import Serializer
 from django.db.models import Q
-from django.contrib.auth.models import User
 
+from main.client.brapi_api import BrapiAPI
 from main.models.models_ativos import Ativo
 from main.serializers.ativos_serializer import AtivoSerializer
 
@@ -41,3 +42,9 @@ def list_ativos(
     ativos = [a.serialize() for a in ativos]
 
     return ativos, total_rows
+
+
+def fetch_all_B3_assets(sigla_str: str):
+    response = BrapiAPI().fetch_available_assets().assets
+    filtered_assets = filter(lambda sigla: sigla_str in sigla, response)
+    return list(filtered_assets)
