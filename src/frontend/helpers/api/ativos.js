@@ -8,10 +8,10 @@ export default {
   fetchAtivosB3 (params) {
     return get('/api/ativos/fetch', params).then(response => response.data)
   },
-  updateOrCreateAtivo (params) {
-    return post(`/api/ativos/${params.sigla}/save`).then(response => response.data)
+  updateOrCreateAtivo (sigla, params) {
+    return post(`/api/ativos/${sigla}/save`, params).then(response => response.data)
   },
-  deleteAtivo (params) {
-    return post(`/api/ativos/${params.sigla}/delete`).then(response => response.data)
+  deleteAtivo (sigla) {
+    return post(`/api/ativos/${sigla}/delete`).then(response => response.data)
   }
 }

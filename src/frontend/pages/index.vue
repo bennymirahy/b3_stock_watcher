@@ -39,7 +39,7 @@
       :loading="loading"
       :server-items-length="totalItems"
       :items-per-page-options="rowsPerPageOptions"
-      :pagination.sync="pagination"
+      :options.sync="pagination"
       item-key="id"
       items-per-page-text="Registros por página"
     >
@@ -79,8 +79,8 @@ export default {
       siglaSearch: '',
       headers: [
         { text: 'Sigla', value: 'sigla' },
-        { text: 'Intervalo de observação', value: 'parsedInterval' },
-        { text: 'Preço de referência (R$)', value: 'ref_price' },
+        { text: 'Intervalo de observação', value: 'parsedInterval', sortable: false },
+        { text: 'Preço de referência (R$)', value: 'ref_price', sortable: false },
         { text: 'Última atualização (UTC-3)', value: 'updated_at' },
         { text: 'Ações', value: 'acoes', sortable: false }
       ],
@@ -91,10 +91,9 @@ export default {
         { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }
       ],
       pagination: {
-        descending: false,
         page: 1,
-        rowsPerPage: 20,
-        sortBy: 'sigla'
+        itemsPerPage: 10,
+        sortBy: ['sigla']
       },
       totalItems: null
     }
@@ -119,7 +118,6 @@ export default {
       const params = this.dumpParams()
       try {
         const result = await api.ativos.listAtivos(params)
-        console.log(result)
         this.ativos = this.parseAtivos(result.ativos)
         this.totalItems = result.count
       } catch (err) {

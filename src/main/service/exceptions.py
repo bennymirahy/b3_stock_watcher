@@ -1,3 +1,6 @@
+class AtivoNotFoundException(Exception):
+    pass
+
 class BrapiBaseException(Exception):
     pass
 

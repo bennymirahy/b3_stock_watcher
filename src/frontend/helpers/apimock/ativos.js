@@ -25,7 +25,6 @@ export default {
         return (x.sigla && x.sigla.toUpperCase().includes(searchStr))
       })
     }
-    console.log(idx)
 
     return mockasync({
       ativos: idx,

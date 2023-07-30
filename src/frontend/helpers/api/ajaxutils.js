@@ -8,11 +8,10 @@ export async function get (url, params) {
   return resp
 }
 
-export async function post (url, params) {
-  const fd = new FormData()
-  params = params || {}
-  Object.keys(params).map(k => {
-    fd.append(k, params[k])
-  })
-  return (await axios.post(url, fd))
+export async function post (url, data, config) {
+  config = config || {}
+  config.headers = config.headers || {}
+  config.headers['Content-Type'] = 'application/json'
+  const resp = await axios.post(url, data, config)
+  return resp
 }

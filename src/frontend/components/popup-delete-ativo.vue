@@ -20,7 +20,7 @@
             Fechar
           </v-btn>
           <v-btn
-            color="success"
+            color="info"
             :loading="loading"
             @click="deleteAtivo()"
           >
@@ -53,9 +53,10 @@ export default {
       this.loading = true
       try {
         await api.ativos.deleteAtivo(this.ativo.sigla)
+        this.$emit('reloadAtivos')
         this.$store.commit('toast/open', {
           message: 'Ativo removido',
-          color: 'success'
+          color: 'info'
         })
       } catch (err) {
         this.$store.commit('toast/open', { message: err.message, color: 'error' })
