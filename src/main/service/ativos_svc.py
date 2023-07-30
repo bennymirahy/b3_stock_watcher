@@ -15,7 +15,7 @@ from main.serializers.ativos_serializer import AtivoSerializer
 # Logging config
 logging.basicConfig(
     level=logging.INFO,
-    filename='ativo_svc.log',
+    filename='main.log',
     filemode='a',
     format='%(asctime)s - %(levelname)s - %(message)s'
 )

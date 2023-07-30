@@ -10,6 +10,10 @@ class ListB3Assets(BaseRequest):
     endpoint = 'available'
     output_form = forms.AvailableAssets
 
+    def __repr__(self):
+        # Mesma representacao para todas as intancias para o cache fucionar
+        return f"ListB3Assets({self.endpoint})"
+
     @memoize(timeout=5 * 60)
     def send(self):
         return super().send()

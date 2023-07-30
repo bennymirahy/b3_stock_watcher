@@ -2,13 +2,6 @@ import logging
 
 from main.client import brapi_endpoints as endpoints
 
-# Logging config
-logging.basicConfig(
-    level=logging.INFO,
-    filename='api.log',
-    filemode='a',
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
 logger = logging.getLogger()
 
 
