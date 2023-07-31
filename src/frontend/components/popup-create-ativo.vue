@@ -102,8 +102,9 @@
             <v-flex xs9 pr-2 class="align-self-end">
               <v-slider
                 v-model="interval"
-                min="1"
+                min="5"
                 :max="timeMax"
+                :step="5"
                 label="Monitarar a cada"
                 thumb-size="23"
                 thumb-label="always"

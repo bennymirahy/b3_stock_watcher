@@ -89,3 +89,12 @@ def fetch_all_B3_assets(sigla_str: str) -> list[str]:
     else:
         filtered_assets = filter(lambda sigla: sigla_str in sigla, response)
         return list(filtered_assets)
+
+
+def fetch_asset_quote(sigla: str, interval: int):
+    try:
+        response = BrapiAPI().fetch_asset_quote(sigla, interval)
+    except BrapiBaseException as ex:
+        logger.error(msg=f'{repr(ex)}')
+    else:
+        return response['prices']

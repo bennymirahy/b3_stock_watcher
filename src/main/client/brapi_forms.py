@@ -1,7 +1,7 @@
-from datetime import datetime
-from typing import List, Optional
+from decimal import Decimal
+from typing import List
 
-from pydantic import BaseModel, RootModel
+from pydantic import BaseModel, model_validator
 
 
 class AvailableAssets(BaseModel):
@@ -9,18 +9,13 @@ class AvailableAssets(BaseModel):
 
 
 class AssetPrice(BaseModel):
-    """
-    {
-        "date":1690462800,
-        "open":30.850000381469727,
-        "high":30.850000381469727,
-        "low":30.75,
-        "close":30.799999237060547,
-        "volume":550900,
-        "adjustedClose":null
-    }
-    """
-    pass
+    date: int  # unix timestamp
+    close: Decimal
+
+    @model_validator(mode='after')
+    def round_prices(self):
+        self.close = round(self.close, 3)
+        return self
 
 
 class AssetPrices(BaseModel):
