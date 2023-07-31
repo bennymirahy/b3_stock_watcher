@@ -49,7 +49,10 @@ class ConsultAssetQuote(BaseRequest):
         return super().send(params=params)
 
     def clean_response(self, resp: dict) -> dict:
-        return {'prices': resp['results'][0]['historicalDataPrice']}
+        clean_prices = [
+            data for data in resp['results'][0]['historicalDataPrice'] if data['close'] is not None
+        ]
+        return {'prices': clean_prices}
 
     def parse_response(self, clean_resp: dict) -> forms.AssetPrices:
         return self.output_form.model_validate(clean_resp)

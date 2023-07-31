@@ -1,16 +1,18 @@
 import logging
+from collections import defaultdict
+from datetime import datetime, timedelta
 from typing import Tuple
 
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.core.serializers.base import Serializer
-from django.db.models import Q
+from django.db.models import Max, Q
 
+from commons.utils import to_tz
 from main.client.brapi_api import BrapiAPI
-from main.models.models_ativos import Ativo
-from main.service.exceptions import AtivoNotFoundException, BrapiBaseException
+from main.models.models_ativos import Ativo, AtivoHistory
 from main.serializers.ativos_serializer import AtivoSerializer
-
+from main.service.exceptions import AtivoNotFoundException, BrapiBaseException
 
 # Logging config
 logging.basicConfig(
@@ -91,10 +93,64 @@ def fetch_all_B3_assets(sigla_str: str) -> list[str]:
         return list(filtered_assets)
 
 
-def fetch_asset_quote(sigla: str, interval: int):
+def _fetch_asset_quote(sigla: str, interval: int):
     try:
         response = BrapiAPI().fetch_asset_quote(sigla, interval)
     except BrapiBaseException as ex:
         logger.error(msg=f'{repr(ex)}')
+        raise
     else:
         return response['prices']
+
+
+def _bulk_create_histories(ativos:list[Ativo], price_quote: dict):
+    to_create = []
+    for a in ativos:
+        to_create.append(
+            AtivoHistory(
+                ativo=a,
+                close_price=price_quote['close'],
+                timestamp=price_quote['date']
+            )
+        )
+    AtivoHistory.objects.bulk_create(to_create)
+
+
+def _update_histories(ativos: list[Ativo]):
+    to_update = defaultdict(list)
+    # Monta dict com sigla x ativos (evita repeticao de logica para varios usuarios)
+    for a in ativos:
+        to_update[a.sigla].append(a)
+
+    for sigla, ativos in to_update.items():
+        prices = _fetch_asset_quote(sigla=sigla, interval=5)
+        latest_price = prices[-1]
+        # Cria historicos para todos os ativos de mesma sigla (diferentes usuarios)
+        _bulk_create_histories(ativos, latest_price)
+
+
+def monitor_ativos():
+    # History mais recente de cada ativo
+    histories = AtivoHistory.objects.values('ativo_id').annotate(latest_time=Max('created_at'))
+    # Monta dict ativo_id x historico mais recente
+    ativos_hist_time = {
+        h['ativo_id']: h['latest_time']
+        for h in histories
+    }
+    ativos = Ativo.objects.in_bulk()
+
+    # Monta dict de ativos a serem atualizados
+    to_update = []
+    for id, ativo in ativos.items():
+        try:
+            hist_time = ativos_hist_time[id]
+        except KeyError:  # Ativo sem historico
+            to_update.append(ativo)
+        else:
+            interval = ativo.interval
+            time_diff = to_tz(datetime.now(), 'UTC') - hist_time
+            if time_diff >= timedelta(minutes=interval):
+                to_update.append(ativo)
+
+    _update_histories(to_update)
+    # _check_price_tunels()
