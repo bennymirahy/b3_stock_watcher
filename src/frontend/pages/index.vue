@@ -57,6 +57,7 @@
       :edit-mode="false"
       @reloadAtivos="update()"
     />
+    <LoginDialog ref="LoginDialog" />
   </v-container>
 </template>
 
@@ -98,6 +99,11 @@ export default {
       totalItems: null
     }
   },
+  computed: {
+    loggedIn () {
+      return this.$store.getters['auth/loggedIn']
+    }
+  },
   watch: {
     pagination: {
       handler () {
@@ -107,10 +113,17 @@ export default {
     },
     siglaSearch () {
       this.update()
+    },
+    loggedIn () {
+      this.update()
     }
   },
   mounted () {
-    this.update()
+    if (this.loggedIn === false) {
+      this.openLoginDialog()
+    } else {
+      this.update()
+    }
   },
   methods: {
     update: debounce(async function () {
@@ -121,7 +134,10 @@ export default {
         this.ativos = this.parseAtivos(result.ativos)
         this.totalItems = result.count
       } catch (err) {
-        this.$store.commit('toast/open', { message: err.message, color: 'error' })
+        console.log(err)
+        if (!err.includes('401')) {
+          this.$store.commit('toast/open', { message: err.message, color: 'error' })
+        }
       } finally {
         this.loading = false
       }
@@ -150,6 +166,9 @@ export default {
     },
     openAddAtivoDialog () {
       this.$refs.popupCreateAtivo.openDialog()
+    },
+    openLoginDialog () {
+      this.$refs.LoginDialog.open()
     }
   }
 }

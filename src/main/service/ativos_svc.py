@@ -30,7 +30,7 @@ logger = logging.getLogger()
 def _get_filtered_ativos_qs(user: User, sigla: str, sort_by: str) -> Serializer:
     qs = Ativo.objects.to_serialize(AtivoSerializer).filter(user=user)
     if sigla:
-        qs = qs.filter(Q(name__icontains=sigla))
+        qs = qs.filter(Q(sigla__icontains=sigla))
     if sort_by:
         qs = qs.order_by(sort_by)
     return qs

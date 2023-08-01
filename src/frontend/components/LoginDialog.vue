@@ -70,9 +70,9 @@ export default {
           return
         }
         if (res) {
-          this.$store.commit('auth/setCurrentUser', res)
+          this.$store.commit('auth/setCurrentUser', res.data.user)
           this.$store.commit('toast/open', {
-            message: `Welcome, ${res.first_name || res.username}!`,
+            message: `Welcome, ${res.data.user.username}!`,
             color: 'blue'
           })
           this.visible = false

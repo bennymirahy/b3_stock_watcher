@@ -11,7 +11,7 @@ from .views_forms import PaginatorForm, AssetForm
 def list_ativos(request):
     user = request.user
     if not user.is_authenticated:
-        return JsonResponse({'authenticated': False}, status=401)
+        return JsonResponse({'ativos': [], 'count': 0}, status=401)
 
     sigla = request.GET.get('sigla')
     paginator = request.GET.get('paginator')

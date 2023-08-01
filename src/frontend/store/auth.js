@@ -21,9 +21,9 @@ export const getters = {
 
 export const actions = {
   async whoami ({ commit }) {
-    const data = await api.auth.whoami()
-    if (data.authenticated) {
-      commit('setCurrentUser', data.user)
+    const res = await api.auth.whoami()
+    if (res.data.authenticated) {
+      commit('setCurrentUser', res.data.user)
     } else {
       commit('setCurrentUser', null)
     }

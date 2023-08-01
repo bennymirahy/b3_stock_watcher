@@ -6,9 +6,6 @@ YELLOW='\e[0;33m'
 BLUE='\033[0;34m'
 LBLU='\033[1;34m'
 
-HOST={{name}}.example.com
-
-
 export PROJ_BASE="$(dirname ${BASH_SOURCE[0]})"
 CD=$(pwd)
 cd $PROJ_BASE
@@ -67,7 +64,7 @@ function dkfulldev {
     invoke dkfulldev
 }
 
-echo -e "${GREEN}Welcome to the ${YELLOW}{{name}}${RESTORE}${GREEN}'s development environment:${RESTORE}"
+echo -e "${GREEN}Welcome to the ${YELLOW}B3 Stock Watcher${RESTORE}${GREEN}'s development environment:${RESTORE}"
 echo_green "Tip: autocomplete works for the commands below \o/"
 echo_green "-------------------------------------------------------------"
 devhelp

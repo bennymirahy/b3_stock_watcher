@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh && \

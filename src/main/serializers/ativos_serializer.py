@@ -14,7 +14,7 @@ class AtivoSerializer(BaseSerializer):
             'id': obj.id,
             'username': obj.user.username,
             'sigla': obj.sigla,
-            'ref_price': obj.ref_price,
+            'ref_price': round(obj.ref_price, 2),
             'lower_limit': obj.lower_limit,
             'upper_limit': obj.upper_limit,
             'interval': obj.interval,

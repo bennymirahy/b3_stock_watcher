@@ -53,7 +53,6 @@
                 >
                   <v-img
                     src="/icon.png"
-                    alt="F-square"
                     width="32"
                     height="32"
                   />
@@ -62,7 +61,7 @@
             </v-col>
             <v-col class="text-left pl-1">
               <v-toolbar-title>
-                F-square
+                Stock Watcher
               </v-toolbar-title>
             </v-col>
           </v-row>
@@ -155,7 +154,7 @@
       app
     >
       <v-spacer />
-      <span>F-square &copy; {{ new Date().getFullYear() }}</span>
+      <span>b3-stock-watcher &copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
     <LoginDialog ref="LoginDialog" />
     <Toast />

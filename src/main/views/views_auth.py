@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -23,8 +25,9 @@ def whoami(request):
 @csrf_exempt
 @require_POST
 def login(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
+    body = json.loads(request.body)
+    username = body['username']
+    password = body['password']
     try:
         user = User.objects.select_related('profile').get(username=username)
     except User.DoesNotExist:
@@ -35,7 +38,7 @@ def login(request):
         user.is_active = True
     auth.login(request, user)
     user_dict = UserSerializer().serialize_object(user)
-    return JsonResponse(user_dict, safe=False)
+    return JsonResponse({'user': user_dict})
 
 
 @require_POST
