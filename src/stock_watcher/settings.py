@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'main',
     'commons',
     'cachalot',
-    'memoize'
+    'memoize',
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -89,6 +90,13 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 
 # Password validation
@@ -153,3 +161,7 @@ CACHALOT_ONLY_CACHABLE_TABLES = (
     # put here which tables you'd like to cache queries
     'stock_watcher_profile'
 )
+
+CRONJOBS = [
+    ('*/5 * * * *', 'main.service.ativos_svc.monitor_ativos', '>> ~/cron_job.log')
+]
