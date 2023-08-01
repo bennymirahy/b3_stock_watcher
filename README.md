@@ -9,23 +9,10 @@ The system is designed to obtain and store the price quotes of the registered as
 Additionally, the application automatically sends email notifications to the investor whenever the price of a monitored asset crosses its lower price tunnel limit, suggesting a buy opportunity. Similarly, it suggests a sell opportunity when the price of a monitored asset crosses its upper price tunnel limit.
 
 
-# Development cycle
+# Backend design pattern
+A MVC (Model-View-Controller) architecture was used. The Model represents the data and database schema. The View is responsible for the api interface, determining how information is presented to the users and how they interact with the application. The Controller part was implemented as a "services" file. It acts as an intermediary between the Model and View, handling the business logic. The Services file encapsulates the application's core functionalities, ensuring separation of concerns and making the codebase more organized and maintainable.
 
-1. Implement your features on localhost:3001 (API Mock)
-2. Validate that with a stakeholder (go back one step if needed)
-3. Develop the back-end API for the feature
-4. Check if everything is okay on the actual front-end on localhost:3000 (go back one step if needed)
-5. Push your changes! \o/
-
-# System Design
-
-<p align="center">
-  <img src="https://github.com/vidalmatheus/fsquare/blob/master/img/system_design.png?raw=true" />
-</p>
-
-# Pipe-and-Filter Pattern
-
-MVC arquitecture
+The choice for this structure was primarily for it's code reusability and scalability. The models, views, and services are loosely coupled, allowing for easier testing, debugging, and modifications without affecting other parts of the application.
 
 
 # 1. Install nvm

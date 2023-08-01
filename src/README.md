@@ -17,12 +17,6 @@ The choice to use a Nuxt frontend in place of the Django templates was due to th
 </p>
 
 
-# Backend design pattern
-A MVC (Model-View-Controller) architecture was used. The Model represents the data and database schema. The View is responsible for the api interface, determining how information is presented to the users and how they interact with the application. The Controller part was implemented as a "services" file. It acts as an intermediary between the Model and View, handling the business logic. The Services file encapsulates the application's core functionalities, ensuring separation of concerns and making the codebase more organized and maintainable.
-
-The choice for this structure was primarily for it's code reusability and scalability. The models, views, and services are loosely coupled, allowing for easier testing, debugging, and modifications without affecting other parts of the application.
-
-
 # Development cycle
 1. Implement your features on localhost:3001 (API Mock)
 2. Validate that with a stakeholder (go back one step if needed)
