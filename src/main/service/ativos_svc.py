@@ -140,28 +140,29 @@ def _send_mail_conditions(ativo: Ativo, new_price: Decimal) -> dict:
         return {'send_mail': False}
 
 
-def _check_price_tunels(created: list[AtivoHistory]):
-    ids = [ah.ativo_id for ah in created]
-    ativos = Ativo.objects.select_related('user').filter(pk__in=ids).in_bulk()
-    for new_history in created:
-        ativo_id = new_history.ativo_id
-        ativo = ativos[ativo_id]
-        email_cond = _send_mail_conditions(ativo, new_history.close_price)
-        if email_cond['send_mail']:
-            subject = f'Notificação: Sugestão de {email_cond["action"]} - {ativo.sigla}'
-            msg = f'''
-                Preço referência: R$ {str(ativo.ref_price).replace('.', ',')}
-                limite do túnel: {email_cond["limit"]} %
-                Novo preço: R$ {str(email_cond["new_price"]).replace('.', ',')}
-                Sugestão: {email_cond["action"]}
-            '''
-            from_email = settings.EMAIL_HOST_USER
-            to_email = [ativo.user.email]
-            send_mail(subject, msg, from_email, to_email)
+def _check_price_tunels(created_lists: list[list[AtivoHistory]]):
+    for bulk_created in created_lists:
+        ids = [ah.ativo_id for ah in bulk_created]
+        ativos = Ativo.objects.select_related('user').filter(pk__in=ids).in_bulk()
+        for new_history in bulk_created:
+            ativo_id = new_history.ativo_id
+            ativo = ativos[ativo_id]
+            email_cond = _send_mail_conditions(ativo, new_history.close_price)
+            if email_cond['send_mail']:
+                subject = f'Notificação: Sugestão de {email_cond["action"]} - {ativo.sigla}'
+                msg = f'''
+                    Preço referência: R$ {str(ativo.ref_price).replace('.', ',')}
+                    Limite do túnel: {email_cond["limit"]} %
+                    Novo preço: R$ {str(email_cond["new_price"]).replace('.', ',')}
+                    Sugestão: {email_cond["action"]}
+                '''
+                from_email = settings.EMAIL_HOST_USER
+                to_email = [ativo.user.email]
+                send_mail(subject, msg, from_email, to_email)
 
 
 
-def _bulk_create_histories(ativos:list[Ativo], price_quote: dict):
+def _bulk_create_histories(ativos:list[Ativo], price_quote: dict) -> list[AtivoHistory]:
     to_create = []
     for a in ativos:
         to_create.append(
@@ -175,18 +176,21 @@ def _bulk_create_histories(ativos:list[Ativo], price_quote: dict):
     return created
 
 
-def _update_histories(ativos: list[Ativo]) -> list[AtivoHistory]:
+def _update_histories(ativos: list[Ativo]) -> list[list[AtivoHistory]]:
     to_update = defaultdict(list)
-    # Monta dict com sigla x ativos (evita repeticao de logica para varios usuarios)
+    # Monta dict com sigla x ativos (minimiza chamadas de api para usuarios com mesmas siglas)
     for a in ativos:
         to_update[a.sigla].append(a)
 
+    created = []
     for sigla, ativos in to_update.items():
         prices = _fetch_asset_quote(sigla=sigla, interval=5)
         latest_price = prices[-1]
         # Cria historicos para todos os ativos de mesma sigla (diferentes usuarios)
-        created =_bulk_create_histories(ativos, latest_price)
-        return created
+        objs =_bulk_create_histories(ativos, latest_price)
+        if objs:
+            created.append(objs)
+    return created
 
 
 def monitor_ativos():
@@ -211,4 +215,4 @@ def monitor_ativos():
             if time_diff >= timedelta(minutes=interval):
                 to_update.append(ativo)
     new_histories = _update_histories(ativos=to_update)
-    _check_price_tunels(created=new_histories)
+    _check_price_tunels(created_lists=new_histories)

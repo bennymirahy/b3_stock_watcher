@@ -80,7 +80,7 @@ export default {
       siglaSearch: '',
       headers: [
         { text: 'Sigla', value: 'sigla' },
-        { text: 'Intervalo de observação', value: 'parsedInterval', sortable: false },
+        { text: 'Frequência de observação', value: 'parsedInterval', sortable: false },
         { text: 'Preço de referência (R$)', value: 'ref_price', sortable: false },
         { text: 'Última atualização (UTC-3)', value: 'updated_at' },
         { text: 'Ações', value: 'acoes', sortable: false }

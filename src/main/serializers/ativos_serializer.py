@@ -13,11 +13,17 @@ class AtivoSerializer(BaseSerializer):
 
     def get_last_update(self, obj: Ativo):
         last_history = obj.ativohistory_set.order_by('timestamp').last()
-        return last_history.timestamp
+        if not last_history:
+            return 'Ainda não foi atualizado'
+        last_update_unix = last_history.timestamp
+        return (
+            to_tz(
+                datetime.fromtimestamp(last_update_unix, tz=pytz.UTC), 'America/Sao_Paulo'
+            ).strftime('%d/%m/%Y às %H:%M')
+        )
 
     def serialize_object(self, obj: Ativo) -> dict:
-        last_update_unix = self.get_last_update(obj)
-        updated_at = to_tz(datetime.fromtimestamp(last_update_unix, tz=pytz.UTC), 'America/Sao_Paulo')
+        updated_at = self.get_last_update(obj)
         return {
             'id': obj.id,
             'username': obj.user.username,
@@ -26,7 +32,7 @@ class AtivoSerializer(BaseSerializer):
             'lower_limit': obj.lower_limit,
             'upper_limit': obj.upper_limit,
             'interval': obj.interval,
-            'updated_at': updated_at.strftime('%d/%m/%Y às %H:%M')
+            'updated_at': updated_at
         }
 
 class HistorySerializer(BaseSerializer):
