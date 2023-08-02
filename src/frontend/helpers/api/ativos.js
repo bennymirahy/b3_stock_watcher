@@ -13,5 +13,8 @@ export default {
   },
   deleteAtivo (sigla) {
     return post(`/api/ativos/${sigla}/delete`).then(response => response.data)
+  },
+  listAtivoHistory (sigla) {
+    return get(`/api/history/${sigla}/list`, {}).then(response => response.data)
   }
 }

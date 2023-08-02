@@ -1,4 +1,5 @@
 import ativos from './db/ativos'
+import history from './db/ativo-histories'
 import indexes from './db/indexes'
 import { mockasync } from './mockutils'
 
@@ -40,5 +41,8 @@ export default {
     return mockasync({
       success: true
     })
+  },
+  listAtivoHistory () {
+    return mockasync({ history })
   }
 }

@@ -10,5 +10,6 @@ urlpatterns = [
     path('api/ativos/list', views_ativos.list_ativos),
     path('api/ativos/<str:sigla>/save', views_ativos.save_ativo),
     path('api/ativos/<str:sigla>/delete', views_ativos.delete_ativo),
-    path('api/ativos/fetch', views_ativos.fetch_ativos)
+    path('api/ativos/fetch', views_ativos.fetch_ativos),
+    path('api/history/<str:sigla>/list', views_ativos.list_history)
 ]

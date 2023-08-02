@@ -134,7 +134,6 @@ export default {
         this.ativos = this.parseAtivos(result.ativos)
         this.totalItems = result.count
       } catch (err) {
-        console.log(err)
         if (!err.includes('401')) {
           this.$store.commit('toast/open', { message: err.message, color: 'error' })
         }

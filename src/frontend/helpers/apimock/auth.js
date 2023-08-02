@@ -5,16 +5,20 @@ let keepLoggedIn = true
 
 export default {
   login (username, password) {
-    return mockasync(zuck)
+    return mockasync({ data: { user: zuck } })
   },
   logout () {
     keepLoggedIn = false
     return mockasync({})
   },
   whoami () {
-    return mockasync({
-      authenticated: keepLoggedIn,
-      user: zuck
-    })
+    return mockasync(
+      {
+        data: {
+          authenticated: keepLoggedIn,
+          user: zuck
+        }
+      }
+    )
   }
 }

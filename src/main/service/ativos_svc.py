@@ -14,7 +14,8 @@ from django.db.models import Max, Q
 from commons.utils import to_tz
 from main.client.brapi_api import BrapiAPI
 from main.models.models_ativos import Ativo, AtivoHistory
-from main.serializers.ativos_serializer import AtivoSerializer
+from main.serializers.ativos_serializer import (AtivoSerializer,
+                                                HistorySerializer)
 from main.service.exceptions import AtivoNotFoundException, BrapiBaseException
 
 # Logging config
@@ -58,6 +59,17 @@ def list_ativos(
     ativos, total_rows = _ativos_paginator(ativos_qs, page, rows_per_page)
     ativos = [a.serialize() for a in ativos]
     return ativos, total_rows
+
+
+def list_history(user: User, sigla: str) -> list:
+    qs = (
+        AtivoHistory
+        .objects
+        .to_serialize(HistorySerializer)
+        .filter(ativo__sigla=sigla, ativo__user=user)
+        .order_by('timestamp')[:25]
+    )
+    return [h.serialize() for h in qs]
 
 
 def update_or_create_ativo(
@@ -107,8 +119,8 @@ def _fetch_asset_quote(sigla: str, interval: int):
 
 
 def _send_mail_conditions(ativo: Ativo, new_price: Decimal) -> dict:
-    lower_price = (1 - ativo.lower_limit / 100) * ativo.ref_price
-    upper_price = (1 + ativo.upper_limit  / 100) * ativo.ref_price
+    lower_price = Decimal(1 - ativo.lower_limit / 100) * ativo.ref_price
+    upper_price = Decimal(1 + ativo.upper_limit  / 100) * ativo.ref_price
     # Price tunel conditions
     if new_price > upper_price:
         return {
@@ -138,9 +150,9 @@ def _check_price_tunels(created: list[AtivoHistory]):
         if email_cond['send_mail']:
             subject = f'Notificação: Sugestão de {email_cond["action"]} - {ativo.sigla}'
             msg = f'''
-                Preço referência: {ativo.ref_price}
-                limite do túnel: {email_cond["limit"]}
-                Novo preço: {email_cond["new_price"]}
+                Preço referência: R$ {str(ativo.ref_price).replace('.', ',')}
+                limite do túnel: {email_cond["limit"]} %
+                Novo preço: R$ {str(email_cond["new_price"]).replace('.', ',')}
                 Sugestão: {email_cond["action"]}
             '''
             from_email = settings.EMAIL_HOST_USER

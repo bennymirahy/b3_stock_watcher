@@ -8,6 +8,13 @@
       <v-icon
         slot="activator"
         left
+        @click="openPlotDialog()"
+      >
+        info
+      </v-icon>
+      <v-icon
+        slot="activator"
+        left
         @click="openEditDialog()"
       >
         edit
@@ -20,6 +27,10 @@
         dangerous
       </v-icon>
     </td>
+    <popup-ativo-plot
+      ref="popupAtivoPlot"
+      :ativo="ativo"
+    />
     <popup-create-ativo
       ref="popupCreateAtivo"
       :ativo="ativo"
@@ -35,10 +46,12 @@
 </template>
 
 <script>
+import popupAtivoPlot from '~/components/popup-ativo-plot'
 import popupCreateAtivo from '~/components/popup-create-ativo'
 import popupDeleteAtivo from '~/components/popup-delete-ativo'
 export default {
   components: {
+    popupAtivoPlot,
     popupCreateAtivo,
     popupDeleteAtivo
   },
@@ -49,6 +62,9 @@ export default {
     }
   },
   methods: {
+    openPlotDialog () {
+      this.$refs.popupAtivoPlot.openDialog()
+    },
     openEditDialog () {
       this.$refs.popupCreateAtivo.openDialog()
     },
