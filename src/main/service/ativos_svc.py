@@ -107,8 +107,8 @@ def _fetch_asset_quote(sigla: str, interval: int):
 
 
 def _send_mail_conditions(ativo: Ativo, new_price: Decimal) -> dict:
-    lower_price = ativo.lower_limit * ativo.ref_price /100
-    upper_price = ativo.upper_limit * ativo.ref_price /100
+    lower_price = (1 - ativo.lower_limit / 100) * ativo.ref_price
+    upper_price = (1 + ativo.upper_limit  / 100) * ativo.ref_price
     # Price tunel conditions
     if new_price > upper_price:
         return {
