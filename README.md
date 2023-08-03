@@ -50,11 +50,3 @@ By running the shell script `dev.sh`, you'll have the following commands to help
 - **dkbuild**: Builds a docker image for this project
 
 - **dkfulldev**: Runs a dockerized *postgresql*, *nginx* and the project image
-
-
-# Running the frontend application
-```bash
-cd frontend
-npm run dev:disable-mock
-```
-Omit the *disable-mock* option for the mocked version

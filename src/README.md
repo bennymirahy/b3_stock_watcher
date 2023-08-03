@@ -53,5 +53,33 @@ nvm use 16
 npm i
 ```
 
+# 7. Run the frontend application
+```bash
+cd frontend
+npm run dev:disable-mock
+```
+Omit the *disable-mock* option for the mocked version
+
+
+# 8. Run the database
+*Virtual env must be activated:
+```bash
+source dev.sh
+dkdb
+```
+
+# 8. Run the Nginx server
+*Virtual env must be activated:
+```bash
+source dev.sh
+dknginx
+```
+
+# 9. Run the Django app
+*Virtual env must be activated:
+```bash
+./manage.py runserver
+```
+
 ## For a basic development setup
 You'll need the database, the nginx server, the nuxt frontend and the django app.
