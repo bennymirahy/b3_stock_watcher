@@ -23,8 +23,8 @@ export DB_PASSWORD=stock_watcher
 export DB_HOST=localhost
 export DB_PORT=5432
 export CACHALOT_ENABLED=1
-export EMAIL_HOST_USER={{your_email@email_provider.com}}
-export EMAIL_HOST_PASSWORD={{your_password}}"
+export EMAIL_HOST_USER={{your_app_email@email_provider.com}}
+export EMAIL_HOST_PASSWORD={{your_email_password}}"
 
 Obs: Certain email providers require the configuration of app passwords.
 [Gmail app password set up](https://support.google.com/mail/answer/185833?hl=en)
@@ -36,17 +36,22 @@ Create and activate a virtualenv for the project, then run
 pip install -r requirements.txt
 ```
 
-# 4. Configure cron jobs
+# 4. Run the migrations
+```bash
+./manage.py migrate
+```
+
+# 5. Configure cron jobs
 ```bash
 ./manage.py crontab add
 ```
 
-
-# 5. Install node modules
+# 6. Install node modules
 ```bash
 cd frontend
+nvm use 16
 npm i
-cd ..
 ```
 
-## You're good to go!
+## For a basic development setup
+You'll need the database, the nginx server, the nuxt frontend and the django app.

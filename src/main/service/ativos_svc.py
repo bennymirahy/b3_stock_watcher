@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from typing import Tuple
 
+import pytz
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -67,9 +68,10 @@ def list_history(user: User, sigla: str) -> list:
         .objects
         .to_serialize(HistorySerializer)
         .filter(ativo__sigla=sigla, ativo__user=user)
-        .order_by('timestamp')[:25]
+        .order_by('-timestamp')[:25]
     )
-    return [h.serialize() for h in qs]
+    history = [h.serialize() for h in qs]
+    return history[::-1]
 
 
 def update_or_create_ativo(
@@ -184,21 +186,25 @@ def _update_histories(ativos: list[Ativo]) -> list[list[AtivoHistory]]:
 
     created = []
     for sigla, ativos in to_update.items():
-        prices = _fetch_asset_quote(sigla=sigla, interval=5)
-        latest_price = prices[-1]
-        # Cria historicos para todos os ativos de mesma sigla (diferentes usuarios)
-        objs =_bulk_create_histories(ativos, latest_price)
-        if objs:
-            created.append(objs)
+        try:
+            prices = _fetch_asset_quote(sigla=sigla, interval=5)
+        except BrapiBaseException:
+            continue
+        else:
+            latest_price = prices[-1]
+            # Cria historicos para todos os ativos de mesma sigla (diferentes usuarios)
+            objs =_bulk_create_histories(ativos, latest_price)
+            if objs:
+                created.append(objs)
     return created
 
 
 def monitor_ativos():
     # History mais recente de cada ativo
-    histories = AtivoHistory.objects.values('ativo_id').annotate(latest_time=Max('created_at'))
+    histories = AtivoHistory.objects.values('ativo_id').annotate(latest_time=Max('timestamp'))
     # Monta dict ativo_id x historico mais recente
     ativos_hist_time = {
-        h['ativo_id']: h['latest_time']
+        h['ativo_id']: datetime.fromtimestamp(h['latest_time'], tz=pytz.UTC)
         for h in histories
     }
     ativos = Ativo.objects.in_bulk()

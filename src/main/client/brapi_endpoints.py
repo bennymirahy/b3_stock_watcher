@@ -39,7 +39,7 @@ class ConsultAssetQuote(BaseRequest):
         return f'ConsultAssetQuote_{self.endpoint}'
 
     @memoize(timeout=3 * 60)
-    def send(self, interval):
+    def send(self, interval=5):
         params = {
             'interval': f'{interval}m',
             'range': '1d',
@@ -49,9 +49,10 @@ class ConsultAssetQuote(BaseRequest):
         return super().send(params=params)
 
     def clean_response(self, resp: dict) -> dict:
-        clean_prices = [
+        prices = [
             data for data in resp['results'][0]['historicalDataPrice'] if data['close'] is not None
         ]
+        clean_prices = sorted(prices, key=lambda p: p['date'])
         return {'prices': clean_prices}
 
     def parse_response(self, clean_resp: dict) -> forms.AssetPrices:

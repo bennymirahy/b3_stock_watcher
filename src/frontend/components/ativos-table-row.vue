@@ -1,5 +1,5 @@
 <template>
-  <tr :key="ativo.id">
+  <tr :key="`${ativo.id}_${ativo.ref_price}}`">
     <td>{{ ativo.sigla }}</td>
     <td>{{ ativo.parsedInterval }}</td>
     <td>{{ ativo.ref_price }}</td>

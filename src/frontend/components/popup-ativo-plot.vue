@@ -20,10 +20,11 @@
 
 <script>
 import { Line as LineChart } from 'vue-chartjs'
+import ChartAnnotationsPlugin from 'chartjs-plugin-annotation'
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js'
 import api from '~api'
 
-ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
+ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, ChartAnnotationsPlugin)
 export default {
   components: { LineChart },
   props: {
@@ -87,6 +88,21 @@ export default {
           legend: {
             display: false
           },
+          annotation: {
+            annotations: [{
+              type: 'line',
+              mode: 'horizontal',
+              yMin: this.ativo.ref_price,
+              yMax: this.ativo.ref_price,
+              borderColor: 'rgb(75, 192, 192)',
+              borderDash: [5],
+              borderWidth: 4,
+              label: {
+                display: true,
+                content: 'Preço de referência'
+              }
+            }]
+          },
           tooltip: {
             enabled: true,
             boxPadding: 5,
@@ -125,6 +141,10 @@ export default {
           }
         ]
       }
+    },
+    ref_price () {
+      console.log(this.ativo.ref_price)
+      return this.ativo.ref_price
     }
   },
   methods: {
